@@ -1,0 +1,4 @@
+﻿  TextureSquare.cpp
+C:\Users\OWNER\source\repos\KG4\shader_s.h(51,34): warning C4101: e: неиспользованная локальная переменная
+C:\Users\OWNER\source\repos\KG4\TextureSquare.cpp(95,21): warning C4101: nChannels: неиспользованная локальная переменная
+  KG4.vcxproj -> C:\Users\OWNER\source\repos\KG4\x64\Debug\KG4.exe
