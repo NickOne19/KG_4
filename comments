@@ -1,0 +1,244 @@
+Этот код представляет собой простое приложение OpenGL, использующее библиотеки GLFW, GLEW и glm для создания 3D сцены с освещением и текстурированием. Давайте рассмотрим каждую строку кода и обозначим, что она делает:
+
+```cpp
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+```
+Здесь подключаются необходимые заголовочные файлы для работы с OpenGL, GLFW (для создания окна и обработки ввода), GLEW (для загрузки расширений OpenGL), а также glm (библиотека математических операций для работы с графикой).
+
+```cpp
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+```
+Эта строка используется для включения реализации загрузки изображений библиотекой stb_image.
+
+```cpp
+#include "shader_m.h"
+#include "camera.h"
+```
+Подключаются пользовательские заголовочные файлы для работы с шейдерами и камерой.
+
+```cpp
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void processInput(GLFWwindow* window);
+unsigned int loadTexture(const char* path);
+```
+Эти строки объявляют прототипы функций, которые будут использоваться позже в коде.
+
+```cpp
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+```
+Задаются ширина и высота окна OpenGL.
+
+```cpp
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
+```
+Инициализация камеры и переменных для обработки мыши.
+
+```cpp
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+```
+Переменные для подсчета времени между кадрами.
+
+```cpp
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+```
+Позиция источника света в сцене.
+
+```cpp
+int main()
+{
+    // Инициализация GLFW и создание окна
+}
+```
+Начало функции main.
+
+```cpp
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+```
+Устанавливаются обратные вызовы для обработки изменения размера окна, движения мыши и прокрутки колеса мыши.
+
+```cpp
+    glEnable(GL_DEPTH_TEST);
+```
+Включение буфера глубины для работы с тестом глубины.
+
+```cpp
+    Shader cubeShader("cube_shader.vs", "cube_shader.fs");
+    Shader lightShader("light_shader.vs", "light_shader.fs");
+```
+Инициализация шейдеров для отрисовки куба и источника света.
+
+```cpp
+    float vertices[] = { ... };
+```
+Массив вершин для куба и источника света.
+
+```cpp
+    unsigned int VBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &VBO);
+```
+Создание VAO (массива вершин) и VBO (буфера вершин) для куба.
+
+```cpp
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+```
+Привязка VAO и VBO, загрузка данных вершин в буфер.
+
+```cpp
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+```
+Настройка указателей на атрибуты вершин (позиция).
+
+```cpp
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+```
+Настройка указателей на атрибуты вершин (нормаль).
+
+```cpp
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+```
+Настройка указателей на атрибуты вершин (текстурные координаты).
+
+```cpp
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+```
+Создание VAO для источника света.
+
+```cpp
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+```
+Настройка вершинного атрибута для источника света.
+
+```cpp
+    unsigned int diffuseMap = loadTexture("diffuse.png");
+    unsigned int specularMap = loadTexture("specular.png");
+```
+Загрузка текстур для куба (диффузная и спекулярная текстуры).
+
+```cpp
+    cubeShader.use();
+    cubeShader.setInt("material.diffuse", 0);
+    cubeShader.setInt("material.specular", 1);
+```
+Использование шейдера для куба и установка текстурных юнитов для диффузной и спекулярной текстур.
+
+```cpp
+    while (!glfwWindowShouldClose(window))
+    {
+        // Цикл отрисовки кадров
+    }
+```
+Цикл отрисовки кадров.
+
+```cpp
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+```
+Очистка буферов цвета и глубины перед каждой отрисовкой кадра.
+
+```cpp
+        cubeShader
+
+.use();
+```
+Использование шейдера для куба.
+
+```cpp
+        cubeShader.setVec3("light.position", lightPos);
+        cubeShader.setVec3("viewPos", camera.Position);
+```
+Установка позиции источника света и позиции камеры в шейдере.
+
+```cpp
+        cubeShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        cubeShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+```
+Установка параметров освещения для источника света (фоновая, диффузная и зеркальная составляющие).
+
+```cpp
+        cubeShader.setFloat("material.shininess", 64.0f);
+```
+Установка степени блеска материала куба.
+
+```cpp
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        cubeShader.setMat4("projection", projection);
+        cubeShader.setMat4("view", view);
+```
+Вычисление матриц проекции и вида, передача их в шейдер.
+
+```cpp
+        glm::mat4 model = glm::mat4(1.0f);
+        cubeShader.setMat4("model", model);
+```
+Установка матрицы модели в шейдер.
+
+```cpp
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+```
+Отрисовка куба.
+
+```cpp
+        lightShader.use();
+```
+Использование шейдера для источника света.
+
+```cpp
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+```
+Установка матриц проекции и вида для источника света.
+
+```cpp
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        lightShader.setMat4("model", model);
+```
+Установка матрицы модели для источника света (перемещение и масштабирование).
+
+```cpp
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+```
+Отрисовка источника света.
+
+```cpp
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &lightCubeVAO);
+    glDeleteBuffers(1, &VBO);
+```
+Очистка ресурсов OpenGL.
+
+```cpp
+    glfwTerminate();
+    return 0;
+}
+```
+Завершение программы и освобождение памяти.
